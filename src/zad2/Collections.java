@@ -123,7 +123,7 @@ public class Collections {
 			System.out.println( who + " zajol zasob i opuscil semafor na zbior A");
 			
 			// ************************************
-			Thread.sleep((long) (Math.random() * 3000));				// imitacja zajetosci procesu
+			Thread.sleep((long) (Math.random() * 1000));				// imitacja zajetosci procesu
 			// ************************************
 			
 			element = (int) getElementFromA(at);
@@ -138,6 +138,9 @@ public class Collections {
 			
 			semaphoreB.acquire();
 			System.out.println( who + " zajol zasob i opuscil semafor na zbior B");
+			// ************************************
+			Thread.sleep((long) (Math.random() * 1000));				// imitacja zajetosci procesu
+			// ***********************************
 			element = (int) getElementFromB(at);
 			System.out.println( who + " zwolnil zasob i podniosl semafor ze zbioru B\n");
 			semaphoreB.release();
@@ -165,7 +168,7 @@ public class Collections {
 		System.out.println( who + " zajol zasob i opuscil semafor na zbior wynikow");
 		
 		// ************************************
-					Thread.sleep((long) (Math.random() * 3000));				// imitacja zajetosci procesu
+		Thread.sleep((long) (Math.random() * 1000));				// imitacja zajetosci procesu
 		// ************************************
 		putResultElement(result);
 		System.out.println( who + " zwolnil zasob i podniosl semafor ze zbioru wynikow\n");

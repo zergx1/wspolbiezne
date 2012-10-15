@@ -24,9 +24,15 @@ public class Main {
 			SymmetricDiffrence checkB = new SymmetricDiffrence(collections, "B");
 			checkA.start();
 			checkB.start();
+			
+			checkA.join();
+			checkB.join();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println("koniec");
+		collections.printCollections();
 		
 	}
 

@@ -36,7 +36,7 @@ public class SymmetricDiffrence extends Thread{
 				checkFromB();
 			
 			System.out.println("Watek " + howToCheck + " zakonczyl dzialanie");
-			collections.printCollections();
+			
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -52,7 +52,7 @@ public class SymmetricDiffrence extends Thread{
 	 */
 	public void checkFromA() throws InterruptedException
 	{
-		String who = "Watek A";
+		String who = "Watek A-B";
 		int sizeA = collections.getSize(who, "A");
 		int sizeB = collections.getSize(who, "B");
 		
@@ -77,7 +77,7 @@ public class SymmetricDiffrence extends Thread{
 	 */
 	public void checkFromB() throws InterruptedException
 	{
-		String who = "\tWatek B";
+		String who = "\tWatek B-A";
 		int sizeA = collections.getSize(who, "A");
 		int sizeB = collections.getSize(who, "B");
 		
