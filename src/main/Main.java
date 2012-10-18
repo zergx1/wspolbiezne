@@ -3,6 +3,7 @@ package main;
 import java.awt.Checkbox;
 
 import zad2.*;
+import zad3.Zad3Manager;
 
 public class Main {
 
@@ -15,25 +16,26 @@ public class Main {
 //		
 //		new Thread(putter).start();
 //		new Thread(getter).start();
-		String a = "1,2,3,4,5";
-		String b = "1,4,5,6";
-//		Collections collections = new Collections();
-		Collections collections = new Collections(a,b);
-		try {
-			SymmetricDiffrence checkA = new SymmetricDiffrence(collections, "A");
-			SymmetricDiffrence checkB = new SymmetricDiffrence(collections, "B");
-			checkA.start();
-			checkB.start();
-			
-			checkA.join();
-			checkB.join();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println("koniec");
-		collections.printCollections();
-		
+		Zad3Manager z3 = new Zad3Manager();
+//		String a = "1,2,3,4,5";
+//		String b = "1,4,5,6";
+////		Collections collections = new Collections();
+//		Collections collections = new Collections(a,b);
+//		try {
+//			SymmetricDiffrence checkA = new SymmetricDiffrence(collections, "A");
+//			SymmetricDiffrence checkB = new SymmetricDiffrence(collections, "B");
+//			checkA.start();
+//			checkB.start();
+//			
+//			checkA.join();
+//			checkB.join();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		System.out.println("koniec");
+//		collections.printCollections();
+//		
 	}
 
 }
