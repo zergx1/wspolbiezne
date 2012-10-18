@@ -84,5 +84,12 @@ public class Passenger extends Thread {
 	{
 		return this.waiting;
 	}
+
+	@Override
+	public String toString() {
+		return "Passenger" + id + " [na pietrze ="+ on_floor + 
+				", jade na=" + goal_floor + 
+				" czekam =" + waiting + " ]";
+	}
 	
 }

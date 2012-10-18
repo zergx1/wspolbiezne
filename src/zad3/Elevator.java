@@ -8,7 +8,7 @@ public class Elevator {
 	private int current_floor = 0;
 	private Vector<Passenger> passengers = new Vector<Passenger>();
 	
-	
+
 	/**
 	 *  Proba wejscia do windy, wywolywana za kazdym razem jak
 	 *  pasazer chce wejsc do windy
@@ -58,7 +58,7 @@ public class Elevator {
 
 		while(current_floor != floor)
 		{
-			wait_sec(2);
+			//wait_sec(2);
 			if(floor > current_floor)
 				set_current_floor(current_floor + 1);
 			else if( floor < current_floor)
@@ -131,8 +131,11 @@ public class Elevator {
 		this.passengers.remove(p);
 	}
 	
-	
-
+	@Override
+	public String toString() {
+		return "Elevator [zajet =" + busy + ", jade na=" + goes_on
+				+ ", obecne pietro=" + current_floor + "]";
+	}
 	
 	
 
