@@ -3,9 +3,22 @@ package zad3;
 import java.util.Vector;
 
 public class Elevator {
+	/**
+	 * @uml.property  name="busy"
+	 */
 	private boolean busy = false;
+	/**
+	 * @uml.property  name="goes_on"
+	 */
 	private int goes_on = 0;
+	/**
+	 * @uml.property  name="current_floor"
+	 */
 	private int current_floor = 0;
+	/**
+	 * @uml.property  name="passengers"
+	 * @uml.associationEnd  multiplicity="(0 -1)" inverse="elevator:zad3.Passenger"
+	 */
 	private Vector<Passenger> passengers = new Vector<Passenger>();
 	
 
@@ -15,7 +28,7 @@ public class Elevator {
 	 */
 	public synchronized boolean try_enter(Passenger p,int floor, int goal_floor)
 	{
-		while(busy == true)
+		if(busy == true)
 		{
 			try {
 				wait();
@@ -25,7 +38,8 @@ public class Elevator {
 				//e.printStackTrace();
 			}
 		}
-		if(p.get_waiting())
+		
+		else if(p.get_waiting())
 		{
 			if(current_floor != floor)
 				go_on(floor);
@@ -43,6 +57,7 @@ public class Elevator {
 	 */
 	public void go_on(int floor)
 	{
+		wait_sec(1);
 		// SPRAWDZA CZY NA DANYM PIETRZE SA PASAZEROWIE O TYM SAMYM CELU
 		// JESLI TAK ZABIERA ICH
 		Vector<Passenger> additional_passengers = this.check_same_passangers(current_floor, floor);
@@ -75,7 +90,7 @@ public class Elevator {
 				System.out.println( p.get_leave_info() );
 				p.set_waiting(false);
 				this.remove_passenger(p);
-				p.interrupt(); // raz dziala raz nie, dorobilem falge w PASSENGER waiting
+				//p.interrupt(); 
 			}
 		}
 		
@@ -85,10 +100,15 @@ public class Elevator {
 	{
 		busy = false;
 		notifyAll();
+        Passenger p = this.getNextPassanger();
+        if( p != null)
+        	p.run();
 	}
 	
 	private void set_current_floor(int value)
 	{
+		//System.out.println(this.PassangersLeft());
+
 		current_floor = value;
 	}
 	
@@ -135,6 +155,24 @@ public class Elevator {
 	public String toString() {
 		return "Elevator [zajet =" + busy + ", jade na=" + goes_on
 				+ ", obecne pietro=" + current_floor + "]";
+	}
+	
+	public String PassangersLeft()
+	{
+		String result = "";
+		for(int i=0;i<this.passengers.size();i++)
+		{
+			result += this.passengers.elementAt(i).get_id()+",";
+		}
+		return result;
+	}
+	
+	private Passenger getNextPassanger()
+	{
+		if(this.passengers.size() > 0)
+			return this.passengers.firstElement();
+		else
+			return null;
 	}
 	
 	

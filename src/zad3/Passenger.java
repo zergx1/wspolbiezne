@@ -1,10 +1,26 @@
 package zad3;
 
 public class Passenger extends Thread {
+	/**
+	 * @uml.property  name="elevator"
+	 * @uml.associationEnd  multiplicity="(1 1)" inverse="passengers:zad3.Elevator"
+	 */
 	private Elevator elevator;
+	/**
+	 * @uml.property  name="waiting"
+	 */
 	private boolean waiting = true;
+	/**
+	 * @uml.property  name="id"
+	 */
 	private int id = 0;
+	/**
+	 * @uml.property  name="on_floor"
+	 */
 	private int on_floor = 0;
+	/**
+	 * @uml.property  name="goal_floor"
+	 */
 	private int goal_floor = 0;
 
 	
@@ -21,16 +37,17 @@ public class Passenger extends Thread {
 		this.id = id;
 		this.on_floor = on_floor;
 		this.goal_floor = goal_floor;
+		System.out.println("Pasazer "+Integer.toString(id)+" czeka na winde na " +
+				Integer.toString(on_floor)+" pietrze i chce jechac na "+
+				Integer.toString(goal_floor)+" pietro");
 	}
 	
 	public void run() 
 	{
-		System.out.println("Pasazer "+Integer.toString(id)+" czeka na winde na " +
-				Integer.toString(on_floor)+" pietrze i chce jechac na "+
-				Integer.toString(goal_floor)+" pietro");
+
 		
-		elevator.try_enter(this,on_floor,goal_floor); // sprawdza czy pasazer nadal ptorzeubje wejsc do windy
-		if(waiting)
+		boolean entered = elevator.try_enter(this,on_floor,goal_floor); // sprawdza czy pasazer nadal ptorzeubje wejsc do windy
+		if(waiting && entered)
 		{
 			System.out.println( this.get_enter_info() );
 			this.waiting = false;
