@@ -12,14 +12,15 @@ public class Elevator extends Thread {
 	public static final int GOING_DOWN = -1;
 	public static final int STOP = 0;
 	
-	private List passengersWaiting = new Vector<Passenger>();
-	private List passengersIn = new Vector<Passenger>();
+	private List<Passenger> passengersWaiting = new Vector<Passenger>();
+	private List<Passenger> passengersIn = new Vector<Passenger>();
 	private int currentFloor = 0;
 	private int finishFloor;
 	private int direction;
 	private Semaphore semaphore = new Semaphore(1,true);
 	private boolean called = false;	// winda nie moze zatrzymac sie gdy zostala wezwana, jedzie bezposrednio po pasazera
 	private Object monitor = new Object();
+	private boolean sleep = false;
 	public void run()
 	{
 		boolean temp = false;
@@ -28,16 +29,21 @@ public class Elevator extends Thread {
 		{
 			try {
 				temp = false;
-				sleep(1000);
+//				sleep(1000);
 				
+
 				semaphore.acquire();
 				
 				if( passengersIn.isEmpty() && passengersWaiting.isEmpty() && !called)	// nic sie nie dzieje
 				{
+					sleep = true;
+					semaphore.release();
 					synchronized (monitor) {
 						monitor.wait();
 					}
 				}
+				else
+				{
 				
 				// true gdy ktos jest w windzie
 				// false gdy nikogo nie ma w windzie
@@ -66,7 +72,7 @@ public class Elevator extends Thread {
 				
 				
 				semaphore.release();
-				
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -97,12 +103,13 @@ public class Elevator extends Thread {
 	
 	public int call(Passenger p) throws InterruptedException
 	{
-		System.out.println(p.toString() + "czeka na winde na pietrze " + p.getStartFloor());
+		System.out.println(p.toString() + "czeka na winde na pietrze " + p.getStartFloor() + " i jade na " + p.getFinishFloor());
 		
 		semaphore.acquire();
-		if( passengersIn.isEmpty() && passengersWaiting.isEmpty() && !called)	// nic sie nie dzieje
+		if( sleep == true )	// nic sie nie dzieje
 		{
 			synchronized (monitor) {
+				sleep = false;
 				monitor.notifyAll();
 			}
 		}
@@ -127,7 +134,7 @@ public class Elevator extends Thread {
 		boolean flag2 = false;	// czy wazny jest kierunek
 		if( passengersIn.isEmpty() )
 			flag2 = true;
-		
+		List<Passenger> delateList = new Vector<Passenger>();
 		 for( int i = 0 ; i < passengersWaiting.size() ; i++)
 		 {
 			 Passenger p = (Passenger) passengersWaiting.get(i);
@@ -138,7 +145,7 @@ public class Elevator extends Thread {
 				 
 				 p.enter();
 				 passengersIn.add(p);
-				 passengersWaiting.remove(p);
+				 delateList.add(p);	// ci pasazerowie juz nie czekaja
 				 
 				 if( !flag && flag2)	// jezeli to byl pierwszy pasazer i wczesniej nie wazny byl kierunek
 				 {
@@ -149,6 +156,12 @@ public class Elevator extends Thread {
 			 }
 		 
 	 	}
+		 
+		 if( flag)
+		 {
+			 passengersWaiting.removeAll(delateList);
+		 }
+		 
 		 if( passengersIn.size() > 1 )
 		 {
 			 if( direction == GOING_UP )	// ustawia najdalsze pietro w zaleznosci od kierunku
@@ -173,20 +186,22 @@ public class Elevator extends Thread {
 	public boolean checkPassengerExit() throws InterruptedException
 	 {
 		boolean flag = false;	// ktos wysiadl	pomocne zeby sprawdzac czy ktos wsiada
-		
+		List<Passenger> delateList = new Vector<Passenger>();
+
 		 for( int i = 0 ; i < passengersIn.size() ; i++)
 		 {
 			 Passenger p = (Passenger) passengersIn.get(i);
 			 if( p.getFinishFloor() == currentFloor ) // jezeli tu wysiadaja
 			 {
-				 p.exit();
-				 passengersIn.remove(p);
+				 delateList.add(p);
 				 exit(p);
 				 flag = true;
 			 }
 		 
 	 	}
-		 
+		
+		 if( flag )
+			 passengersIn.removeAll(delateList);
 		 return flag;
 		
 	 }

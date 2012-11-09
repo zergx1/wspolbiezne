@@ -24,8 +24,8 @@ public class Passenger extends Thread {
 		name = Thread.currentThread().getName().substring(7);	// pobranie numeru watku
 		try {
 			startFloor = elevator.call(this);
+			exit();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -51,4 +51,5 @@ public class Passenger extends Thread {
 	public String toString() {
 		return "Pasazer " + name + " ";
 	}
+
 }
