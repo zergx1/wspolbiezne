@@ -130,28 +130,27 @@ public class Elevator extends Thread {
 	public void checkPassengerEnter() throws InterruptedException
 	 {
 		
-		boolean flag = false;	// okresla czy ktos juz wsiadl
-		boolean flag2 = false;	// czy wazny jest kierunek
-		if( passengersIn.isEmpty() )
-			flag2 = true;
+		boolean flag = false;	// czy wazny jest kierunek
+		if( !passengersIn.isEmpty() )
+			flag = true;		// kierunek jest wazny
 		List<Passenger> delateList = new Vector<Passenger>();
 		 for( int i = 0 ; i < passengersWaiting.size() ; i++)
 		 {
 			 Passenger p = (Passenger) passengersWaiting.get(i);
 			 if( p.getStartFloor() == currentFloor ) // jezeli jada w tym samym kierunku i sa na tym pietrze co winda
 			 {
-				 if( !flag2 && p.getDirection() != direction)	// jezeli nie wazny jest kierunek to napewno nie wejdzie
+				 if( flag && p.getDirection() != direction)	// jezeli nie wazny jest kierunek to napewno nie wejdzie
 					 continue;	// sprawdza kolejnego pasazera gdy kierunek jest istotny i nie zgadza sie
 				 
 				 p.enter();
 				 passengersIn.add(p);
 				 delateList.add(p);	// ci pasazerowie juz nie czekaja
 				 
-				 if( !flag && flag2)	// jezeli to byl pierwszy pasazer i wczesniej nie wazny byl kierunek
+				 if( !flag)	// jezeli nie wazny jest kierunek to musimy go ustalic
 				 {
 					 finishFloor = p.getFinishFloor();	// okresla gdzie chcemy jechac
 					 checkDirection();
-					 flag = true;	// i mozemy sprawdzac dalej majac juz kierunek okreslony
+					 flag = true;	// wektor osob w windzie juz nie jest pusty dlatego kierunek jest wazny
 				 }
 			 }
 		 
@@ -237,5 +236,19 @@ public class Elevator extends Thread {
 			synchronized (p) {
 			p.notifyAll();	
 			}
+		}
+
+		public String toString() {
+			String result = "Winda " + currentFloor + "->" + finishFloor + " kierunek: ";
+			if( direction == 1)
+				result += "gora";
+			else if( direction == -1)
+				result += "dol";
+			else
+				result += "brak";
+			
+			result += "\npasazerow czekajacych: " + passengersWaiting.size() + " pasazerow w windzie: " + passengersIn.size() + "\n";
+			result += "wezwanie: " + called + "\n";
+			return result;
 		}
 }
