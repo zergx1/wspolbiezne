@@ -17,12 +17,15 @@ public class Person extends Thread {
 		this.actions_left = actions_left;
 		this.created_info();
 		res.add_to_queue(this);
+		//this.start();
 		//res.get_vectors_info();
 	}
 	
 	public void run() 
 	{
 
+		//this.wait_for_acces();
+		
 		for(int i=0;i<=this.actions_left;i++)
 		{
 			//System.out.println("ITERACJA! "+String.valueOf(i)+this.get_info());
@@ -52,6 +55,21 @@ public class Person extends Thread {
 		//System.out.println("KONIEC!"+this.get_info());
 	}
 	
+	
+	public synchronized void wait_for_acces()
+	{
+		try {
+			this.wait();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void wake_up()
+	{
+		this.notify();
+	}
 	
 	public PersonType getPt() {
 		return pt;
@@ -113,8 +131,8 @@ public class Person extends Thread {
 	
 	public void deleted_info()
 	{
-		String msg = "-"+this.get_info()+" wykorzystal wszystkie swoje akcje";
-		System.out.println(msg);
+//		String msg = "-"+this.get_info()+" wykorzystal wszystkie swoje akcje";
+//		System.out.println(msg);
 	}
 
 	@Override

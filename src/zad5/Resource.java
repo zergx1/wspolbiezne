@@ -6,11 +6,12 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.util.NoSuchElementException;
 import java.util.Vector;
 
 import zad3.Passenger;
 
-public class Resource {
+public class Resource extends Thread {
 	/**
 	 * 0 - Free
 	 * 1 - Taken by readers
@@ -19,59 +20,73 @@ public class Resource {
 	private int status = 0;
 	private int current_id = 0;
 	// LISTA OSOB KTORE CHCA DOSAC DOSTEP - KOLEJKA FIFO
-	private Vector<Person> persons_list = new Vector<Person>();
+	private static Vector<Person> persons_list = new Vector<Person>();
 	// LISTA OSOB OBECNIE OBSLUGUJACYCH ZASOB
-	private Vector<Person> active_list = new Vector<Person>();
+	private static Vector<Person> active_list = new Vector<Person>();
 
 	
+	public void run() 
+	{
 
-	public synchronized boolean get_access(Person p)
+		while( !persons_list.isEmpty() )
+		{
+			Person p = null;
+			try{
+				p = this.getNextPerson();
+			}
+			catch(NoSuchElementException e)
+			{
+				break;
+			}
+			//Person p = this.getNextPerson();
+			if( check_if_can(p) && p != null )
+			{
+				if(p.isAlive())
+					p.wake_up();
+				else
+					p.start();
+			}
+		}
+		
+		//System.out.println("KONIEC!"+this.get_info());
+	}
+
+	public boolean get_access(Person p)
 	{
 		
 		//wait_sec(1);
 		boolean can_use = true;
 		PersonType person_type = p.getPt(); // Get Person type
 
-		//Dlugi warunek, nie do wytlumaczenia
-		while(status == 2 || ((this.current_id != p.get_id() && this.current_id != 0 && status != 1 ) ||  (status == 1 && !this.can_get_access(p)) ) )
+		if( check_if_can(p) )
 		{
-
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					return false;
-				}
-				
-//			}
+			p.wait_for_acces();
+			
 		}
 		can_use = can_use && add_to_active(p);
-		if(can_use)
-		{
+		return true;
 
-			return true;
-		}
-	
-		return false;
 	}
 	
-	public synchronized void leave_access(Person p)
+	public void leave_access(Person p)
 	{
 		remove_from_active(p);
 		if( p.get_actions_left() > 0)
 			add_to_queue(p);
 		else
 			p.deleted_info();
+		//this.get_vectors_info();
 		if( active_list.isEmpty() )
 		{
 			status = 0;
 			//System.out.println("Wywoluje notify");
 			//this.get_vectors_info();
-			notifyAll();
+			//notifyAll();
 			Person pn = this.getNextPerson();
 			if(pn != null)
 			{
 				this.current_id = pn.get_id();
-//				System.out.println("Nastepny"+String.valueOf(this.current_id));
+				//System.out.println("Nastepny"+String.valueOf(this.current_id));
 //				if( current_id == 2)
 //				{
 //				System.out.println("Status: "+String.valueOf(status)+" current_id: "+ String.valueOf(current_id)+" can_get_access: "+String.valueOf(this.can_get_access(pn)));
@@ -79,6 +94,19 @@ public class Resource {
 //				}
 			}
 		}
+		
+	}
+	
+	public boolean check_if_can(Person p)
+	{
+//		if(p.getPt() == PersonType.WRITER)
+//		{
+//			System.out.println("Status: "+String.valueOf(status)+" current_id: "+ String.valueOf(current_id)+" can_get_access: "+String.valueOf(this.can_get_access(p)));
+//
+//		}
+		if(status == 2 || ((this.current_id != p.get_id() && this.current_id != 0 && status != 1 ) ||  (status == 1 && !this.can_get_access(p)) ))
+			return false;
+		return true;
 		
 	}
 	
@@ -166,7 +194,7 @@ public class Resource {
 	
 	private Person getNextPerson()
 	{
-		if(this.persons_list.size() > 0)
+		if( this.persons_list.size() > 0)
 			return this.persons_list.firstElement();
 		else
 			return null;
