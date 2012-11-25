@@ -17,7 +17,7 @@ public class Person extends Thread {
 		this.actions_left = actions_left;
 		this.created_info();
 		res.add_to_queue(this);
-		//this.start();
+		this.start();
 		//res.get_vectors_info();
 	}
 	

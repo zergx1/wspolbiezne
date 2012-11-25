@@ -6,23 +6,23 @@ public class Zad5Manager {
 		Resource r = new Resource();
 //		for(int i=0;i<4;i++)
 //		{
-			Person p = new Person(r,1,PersonType.READER,1);
+			Person p = new Person(r,1,PersonType.READER,2);
 			//p.start();
 
-			p = new Person(r,2,PersonType.READER,1);
+			p = new Person(r,2,PersonType.READER,2);
 			//p.start();
 			
-			p = new Person(r,3,PersonType.WRITER,1);
+			p = new Person(r,3,PersonType.WRITER,2);
 			
-			p = new Person(r,4,PersonType.READER,1);
+			p = new Person(r,4,PersonType.READER,2);
 			//p.start();
 
-			p = new Person(r,5,PersonType.READER,1);
-			p = new Person(r,6,PersonType.READER,1);
+			p = new Person(r,5,PersonType.READER,2);
+			p = new Person(r,6,PersonType.READER,2);
 
 			//p.start();
 			
-			p = new Person(r,7,PersonType.WRITER,1);
+			p = new Person(r,7,PersonType.WRITER,2);
 			//p.start();
 			
 //			p = new Person(r,4,PersonType.WRITER,2);

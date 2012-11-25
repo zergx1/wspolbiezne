@@ -41,10 +41,10 @@ public class Resource extends Thread {
 			//Person p = this.getNextPerson();
 			if( check_if_can(p) && p != null )
 			{
-				if(p.isAlive())
+				//if(p.isAlive())
 					p.wake_up();
-				else
-					p.start();
+				//else
+				//	p.start();
 			}
 		}
 		
@@ -58,12 +58,13 @@ public class Resource extends Thread {
 		boolean can_use = true;
 		PersonType person_type = p.getPt(); // Get Person type
 
-		if( check_if_can(p) )
+		if( !check_if_can(p) )
 		{
 			p.wait_for_acces();
 			
 		}
 		can_use = can_use && add_to_active(p);
+		this.current_id = p.get_id();
 		return true;
 
 	}
@@ -99,13 +100,14 @@ public class Resource extends Thread {
 	
 	public boolean check_if_can(Person p)
 	{
-//		if(p.getPt() == PersonType.WRITER)
-//		{
-//			System.out.println("Status: "+String.valueOf(status)+" current_id: "+ String.valueOf(current_id)+" can_get_access: "+String.valueOf(this.can_get_access(p)));
-//
-//		}
+
+		    //0                     1                              1                       1                    1               1
 		if(status == 2 || ((this.current_id != p.get_id() && this.current_id != 0 && status != 1 ) ||  (status == 1 && !this.can_get_access(p)) ))
+		{
+
 			return false;
+		}
+
 		return true;
 		
 	}
